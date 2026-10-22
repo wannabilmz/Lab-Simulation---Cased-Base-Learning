@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab Simulasi – Case Based Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f7f6;--sf:#fff;--tx:#17211f;--mu:#5b6b67;--ln:#d5dcda;--ac:#0f766e;--ac2:#b45309;--bar:#0f766e;
+color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101716;--sf:#18211f;--tx:#e6efec;--mu:#97a9a4;--ln:#2d3b38;--ac:#4fd1c5;--ac2:#f6ad55;--bar:#4fd1c5;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101716;--sf:#18211f;--tx:#e6efec;--mu:#97a9a4;--ln:#2d3b38;--ac:#4fd1c5;--ac2:#f6ad55;--bar:#4fd1c5;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+main{max-width:920px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:1.5rem;margin:0 0 4px}h2{font-size:1.15rem;margin:22px 0 8px}h3{font-size:1rem;margin:14px 0 4px}
+p{margin:6px 0;max-width:72ch}.mu{color:var(--mu)}
+nav{display:flex;gap:4px;flex-wrap:wrap;margin:14px 0;border-bottom:1px solid var(--ln)}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--mu);padding:8px 12px;font:inherit;cursor:pointer}
+nav button[aria-selected=true]{color:var(--tx);border-color:var(--ac);font-weight:600}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+section{display:none}section.on{display:block}
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:6px;padding:14px;margin:10px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+label{display:block;font-size:.85rem;color:var(--mu)}
+input{width:100%;padding:6px 8px;border:1px solid var(--ln);border-radius:4px;background:var(--bg);color:var(--tx);font:inherit}
+.go{background:var(--ac);color:var(--bg);border:0;border-radius:4px;padding:9px 18px;font:inherit;font-weight:600;cursor:pointer;margin-top:12px}
+.go.alt{background:none;color:var(--ac);border:1px solid var(--ac);margin-left:8px}
+.st{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px}
+.st div{border-left:3px solid var(--ac);padding:2px 10px}.st b{display:block;font-size:1.3rem}.st span{font-size:.8rem;color:var(--mu)}
+.bars{display:flex;align-items:flex-end;gap:2px;height:130px;border-bottom:1px solid var(--ln);margin-top:12px}
+.b{flex:1;background:var(--bar);min-height:1px;border-radius:2px 2px 0 0}
+.ax{display:flex;justify-content:space-between;font-size:.75rem;color:var(--mu)}
+.tw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:.88rem}
+th,td{padding:5px 8px;border-bottom:1px solid var(--ln);text-align:right;white-space:nowrap}th:first-child,td:first-child{text-align:left}
+tr.best td{font-weight:600;color:var(--ac2)}
+details{margin:8px 0}summary{cursor:pointer;font-weight:600}
+li{margin:3px 0;max-width:72ch}
+.note{border-left:3px solid var(--ac2);padding:2px 10px;margin:10px 0;color:var(--mu)}
+</style>
+</head>
+<body>
+<main>
+<h1>Lab Simulasi: Case Based Learning</h1>
+<p class="mu">Mampu menganalisis model simulasi yang sesuai untuk berbagai contoh permasalahan dunia nyata.</p>
+<nav role="tablist" id="tabs">
+<button role="tab" data-t="panduan">Panduan CBL</button>
+<button role="tab" data-t="antrean">Kasus 1: Antrean</button>
+<button role="tab" data-t="persediaan">Kasus 2: Persediaan</button>
+<button role="tab" data-t="proyek">Kasus 3: Proyek</button>
+</nav>
+
+<section id="panduan">
+<h2>Cara memakai alat ini dalam perkuliahan</h2>
+<p>Alat ini mengubah satu sesi kuliah menjadi satu siklus Case Based Learning. Setiap kasus berisi masalah nyata, model simulasi yang bisa diubah parameternya, dan hasil yang harus dianalisis mahasiswa.</p>
+<div class="box"><h3>Alur satu sesi (±100 menit)</h3><ol>
+<li><b>Pemaparan kasus (10 menit).</b> Dosen membacakan situasi kasus. Mahasiswa menulis masalah inti dan ukuran keberhasilan (misalnya waktu tunggu rata-rata).</li>
+<li><b>Pemilihan model (15 menit).</b> Mahasiswa menjawab: apa yang acak? apa yang berubah per waktu? Dari jawaban itu dipilih pendekatan: simulasi kejadian diskret (antrean), simulasi dengan kebijakan berulang (persediaan), atau Monte Carlo (proyek).</li>
+<li><b>Menjalankan simulasi (25 menit).</b> Mahasiswa mengubah parameter, menjalankan beberapa kali dengan seed berbeda, lalu mencatat hasil.</li>
+<li><b>Verifikasi dan validasi (15 menit).</b> Bandingkan hasil dengan rumus teori (tersedia di Kasus 1) atau dengan data lapangan, lalu periksa apakah asumsi masuk akal.</li>
+<li><b>Analisis dan rekomendasi (25 menit).</b> Mahasiswa memilih skenario terbaik dan menjelaskan trade-off biaya terhadap layanan atau risiko.</li>
+<li><b>Refleksi (10 menit).</b> Apa keterbatasan model? Data apa yang perlu dikumpulkan agar hasil lebih akurat?</li></ol></div>
+<div class="box"><h3>Pemetaan ke capaian pembelajaran</h3>
+<div class="tw"><table><tr><th>Capaian</th><th>Bukti di alat ini</th></tr>
+<tr><td>Memilih model yang sesuai</td><td>Tiga kasus dengan karakter berbeda: antrean, persediaan, risiko proyek</td></tr>
+<tr><td>Menganalisis model simulasi</td><td>Statistik keluaran, histogram, perbandingan skenario</td></tr>
+<tr><td>Permasalahan dunia nyata</td><td>Bank, toko ritel, proyek konstruksi</td></tr></table></div></div>
+<h2>Konsep dasar yang dipakai semua kasus</h2>
+<ul>
+<li><b>Seed.</b> Angka awal generator acak. Seed sama menghasilkan hasil yang sama, sehingga hasil bisa direproduksi dan dibandingkan adil antar skenario.</li>
+<li><b>Replikasi.</b> Satu kali jalan hanya satu sampel. Jalankan beberapa seed dan lihat sebaran hasilnya sebelum menyimpulkan.</li>
+<li><b>Verifikasi</b> memeriksa apakah model dibuat dengan benar. <b>Validasi</b> memeriksa apakah model mewakili kenyataan.</li>
+<li><b>Fase transien.</b> Sistem yang dimulai kosong bisa memberi hasil bias di awal. Pakai periode simulasi yang cukup panjang.</li></ul>
+</section>
+
+<section id="antrean">
+<h2>Kasus 1: Antrean di kantor cabang bank</h2>
+<p>Cabang bank menerima nasabah secara acak. Manajer ingin tahu berapa teller yang dibutuhkan agar nasabah tidak menunggu terlalu lama, tanpa membuang biaya gaji.</p>
+<div class="box"><div class="grid" id="qf"></div>
+<button class="go" id="qb">Jalankan simulasi</button><button class="go alt" id="qa">Bandingkan 1 sampai 5 teller</button>
+<div class="st" id="qo"></div><div id="qh"></div><div class="tw" id="qt2"></div></div>
+<details open><summary>Penjelasan model</summary>
+<p><b>Jenis model:</b> simulasi kejadian diskret, antrean M/M/c. Kedatangan mengikuti proses Poisson (jeda antar kedatangan berdistribusi eksponensial dengan laju λ). Waktu layanan eksponensial dengan laju μ per teller. Ada c teller dan satu antrean FIFO.</p>
+<p><b>Cara kerja:</b> program membuat waktu kedatangan satu per satu. Setiap nasabah dilayani teller yang paling cepat kosong. Waktu tunggu = waktu mulai dilayani dikurangi waktu tiba.</p>
+<p><b>Verifikasi:</b> hasil simulasi dibandingkan dengan rumus Erlang C. Selisih kecil menandakan model benar; selisih besar pada simulasi pendek wajar karena variasi acak.</p>
+<p><b>Utilisasi (ρ)</b> = λ / (c·μ). Jika ρ mendekati atau melebihi 1, antrean membesar tanpa batas dan tidak ada nilai teoritis stabil.</p>
+<p><b>Pertanyaan diskusi:</b> berapa teller yang menjaga rata-rata tunggu di bawah 5 menit? Apa yang terjadi bila jam sibuk membuat λ naik 30%? Apakah rata-rata saja cukup, atau waktu tunggu maksimum juga penting?</p></details>
+</section>
+
+<section id="persediaan">
+<h2>Kasus 2: Kebijakan stok di toko ritel</h2>
+<p>Sebuah toko menjual satu produk dengan permintaan harian acak. Toko memakai kebijakan (s, Q): bila posisi stok turun sampai s unit atau kurang, pesan Q unit yang tiba setelah L hari. Permintaan yang tidak terlayani dianggap hilang.</p>
+<div class="box"><div class="grid" id="if"></div>
+<button class="go" id="ib">Jalankan simulasi</button><button class="go alt" id="ia">Cari titik pesan ulang terbaik</button>
+<div class="st" id="io"></div><div class="tw" id="it"></div></div>
+<details open><summary>Penjelasan model</summary>
+<p><b>Jenis model:</b> simulasi berbasis waktu dengan langkah harian. Permintaan harian berdistribusi normal (dibulatkan, minimal 0). Setiap hari: pesanan yang tiba masuk stok, permintaan dilayani, lalu stok dicek terhadap s.</p>
+<p><b>Posisi stok</b> = stok di gudang + barang yang sudah dipesan tetapi belum tiba. Memakai posisi stok (bukan stok fisik) mencegah pemesanan ganda.</p>
+<p><b>Trade-off biaya:</b> s kecil berarti biaya simpan rendah tetapi sering kehabisan (biaya kekurangan tinggi). s besar berarti layanan baik tetapi biaya simpan naik. Tabel perbandingan menunjukkan titik terendah total biaya.</p>
+<p><b>Common random numbers:</b> semua skenario dalam tabel memakai seed yang sama, sehingga perbedaan hasil benar-benar berasal dari kebijakan, bukan keberuntungan.</p>
+<p><b>Pertanyaan diskusi:</b> apakah s terbaik berubah bila lead time naik dari 3 ke 7 hari? Bagaimana bila biaya kekurangan jauh lebih besar dari biaya simpan? Apa keterbatasan asumsi permintaan normal?</p></details>
+</section>
+
+<section id="proyek">
+<h2>Kasus 3: Risiko keterlambatan proyek</h2>
+<p>Proyek renovasi terdiri dari empat pekerjaan. Setelah A selesai, B dan C berjalan paralel, dan D baru mulai setelah keduanya selesai. Durasi tiap pekerjaan tidak pasti. Berapa peluang proyek selesai sebelum tenggat?</p>
+<div class="box"><div class="tw"><table id="pt"></table></div>
+<div class="grid" style="margin-top:10px"><div><label for="pd">Tenggat (hari)</label><input id="pd" type="number" value="40"></div><div><label for="pn">Jumlah replikasi</label><input id="pn" type="number" value="5000"></div><div><label for="ps">Seed</label><input id="ps" type="number" value="7"></div></div>
+<button class="go" id="pb">Jalankan Monte Carlo</button>
+<div class="st" id="po"></div><div id="ph"></div></div>
+<details open><summary>Penjelasan model</summary>
+<p><b>Jenis model:</b> simulasi Monte Carlo statis. Tidak ada waktu yang berjalan; setiap replikasi mengambil satu durasi acak per pekerjaan lalu menghitung total.</p>
+<p><b>Distribusi segitiga</b> dipakai karena mudah diisi dari tiga estimasi: optimis, paling mungkin, pesimis. Ini praktis bila data historis belum ada.</p>
+<p><b>Durasi proyek</b> = A + maks(B, C) + D. Rumus maks inilah yang membuat rata-rata total lebih besar dari penjumlahan nilai rata-rata sederhana (efek <i>merge bias</i>), sehingga jadwal deterministik cenderung terlalu optimis.</p>
+<p><b>Indeks kekritisan</b> menunjukkan seberapa sering suatu pekerjaan paralel menjadi penentu durasi. Pekerjaan dengan indeks tinggi layak diprioritaskan untuk dikurangi risikonya.</p>
+<p><b>Pertanyaan diskusi:</b> berapa tenggat yang aman untuk peluang 90%? Mana yang lebih berharga: menambah pekerja di B atau di C?</p></details>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+function rng(s){let a=s>>>0;return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function fields(el,list){$(el).innerHTML=list.map(([id,l,v])=>`<div><label for="${id}">${l}</label><input id="${id}" type="number" step="any" value="${v}"></div>`).join('')}
+const n=id=>parseFloat($(id).value);
+function cards(el,a){$(el).innerHTML=a.map(([l,v])=>`<div><b>${v}</b><span>${l}</span></div>`).join('')}
+function hist(el,vals,bins,unit){const mn=Math.min(...vals),mx=Math.max(...vals),w=(mx-mn)/bins||1,c=Array(bins).fill(0);
+vals.forEach(v=>c[Math.min(bins-1,Math.floor((v-mn)/w))]++);const m=Math.max(...c);
+$(el).innerHTML='<div class="bars">'+c.map((k,i)=>`<div class="b" style="height:${k/m*100}%" title="${(mn+i*w).toFixed(1)} sampai ${(mn+(i+1)*w).toFixed(1)} ${unit}: ${k}"></div>`).join('')+`</div><div class="ax"><span>${mn.toFixed(1)}</span><span>${unit}</span><span>${mx.toFixed(1)}</span></div>`}
+const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const f1=x=>x.toFixed(1),f2=x=>x.toFixed(2);
+
+/* Tabs */
+const tabs=[...document.querySelectorAll('#tabs button')];
+function show(t){if(!$(t))t='panduan';document.querySelectorAll('section').forEach(s=>s.classList.toggle('on',s.id===t));tabs.forEach(b=>b.setAttribute('aria-selected',b.dataset.t===t))}
+tabs.forEach(b=>b.onclick=()=>{show(b.dataset.t);try{location.hash=b.dataset.t}catch(e){}});
+show((location.hash||'').slice(1));
+
+/* Kasus 1: antrean */
+fields('qf',[['ql','Kedatangan λ (nasabah/jam)',50],['qm','Layanan μ (nasabah/jam/teller)',20],['qc','Jumlah teller',3],['qt','Lama simulasi (jam)',200],['qs','Seed',1]]);
+function simQ(lam,mu,c,T,seed){const r=rng(seed);let t=0,free=Array(c).fill(0),w=[],busy=0;
+for(;;){t+=-Math.log(1-r())/lam;if(t>T)break;let k=0;for(let i=1;i<c;i++)if(free[i]<free[k])k=i;
+const st=Math.max(t,free[k]),sv=-Math.log(1-r())/mu;w.push((st-t)*60);free[k]=st+sv;busy+=sv}
+return{w,util:busy/(c*T)}}
+function erlang(lam,mu,c){const a=lam/mu,rho=a/c;if(rho>=1)return null;let s=0,term=1;
+for(let k=0;k<c;k++){s+=term;term*=a/(k+1)}const top=term/(1-rho),pw=top/(s+top);return{wq:pw/(c*mu-lam)*60,pw}}
+$('qb').onclick=()=>{const lam=n('ql'),mu=n('qm'),c=Math.max(1,Math.round(n('qc'))),T=n('qt'),{w,util}=simQ(lam,mu,c,T,n('qs'));
+if(!w.length)return;const th=erlang(lam,mu,c),wq=mean(w);
+cards('qo',[['Nasabah dilayani',w.length],['Rata-rata tunggu (menit)',f2(wq)],['Tunggu maksimum (menit)',f1(Math.max(...w))],['Nasabah yang harus menunggu',f1(w.filter(x=>x>0.001).length/w.length*100)+'%'],['Utilisasi teller',f1(util*100)+'%'],['Rata-rata antrean (orang)',f2(w.length/T*wq/60)],['Tunggu teori Erlang C (menit)',th?f2(th.wq):'tidak stabil']]);
+hist('qh',w.filter(x=>x>0.001),20,'menit tunggu (hanya yang menunggu)');$('qt2').innerHTML=''};
+$('qa').onclick=()=>{const lam=n('ql'),mu=n('qm'),T=n('qt');let h='<table><tr><th>Teller</th><th>Utilisasi</th><th>Tunggu simulasi (mnt)</th><th>Tunggu teori (mnt)</th><th>Maks (mnt)</th></tr>';
+for(let c=1;c<=5;c++){const{w,util}=simQ(lam,mu,c,T,n('qs')),th=erlang(lam,mu,c);h+=`<tr><td>${c}</td><td>${f1(util*100)}%</td><td>${f2(mean(w))}</td><td>${th?f2(th.wq):'tidak stabil'}</td><td>${f1(Math.max(...w))}</td></tr>`}
+$('qt2').innerHTML=h+'</table>'};
+
+/* Kasus 2: persediaan */
+fields('if',[['im','Rata-rata permintaan/hari',20],['isd','Simpangan baku permintaan',6],['iL','Lead time (hari)',4],['iQ','Jumlah pesan Q',150],['is','Titik pesan ulang s',90],['iK','Biaya per pesanan',50000],['ih','Biaya simpan/unit/hari',100],['ip','Biaya kekurangan/unit',5000],['iN','Lama simulasi (hari)',365],['iS','Seed',3]]);
+function simInv(s,o,seed){const r=rng(seed);let oh=o.Q,pipe=[],ord=0,short=0,dem=0,inv=0;
+for(let d=0;d<o.N;d++){const arr=pipe.filter(x=>x[0]===d);arr.forEach(x=>oh+=x[1]);pipe=pipe.filter(x=>x[0]!==d);
+const D=Math.max(0,Math.round(o.m+o.sd*Math.sqrt(-2*Math.log(1-r()))*Math.cos(2*Math.PI*r())));dem+=D;
+const sold=Math.min(oh,D);oh-=sold;short+=D-sold;inv+=oh;
+if(oh+pipe.reduce((a,x)=>a+x[1],0)<=s){pipe.push([d+o.L,o.Q]);ord++}}
+return{fill:1-short/dem,ord,avg:inv/o.N,short,cost:ord*o.K+inv*o.h+short*o.p}}
+const iopt=()=>({m:n('im'),sd:n('isd'),L:Math.round(n('iL')),Q:n('iQ'),K:n('iK'),h:n('ih'),p:n('ip'),N:Math.round(n('iN'))});
+const rp=x=>'Rp'+Math.round(x).toLocaleString('id-ID');
+$('ib').onclick=()=>{const o=iopt(),r=simInv(n('is'),o,n('iS'));
+cards('io',[['Tingkat layanan (fill rate)',f1(r.fill*100)+'%'],['Jumlah pesanan',r.ord],['Rata-rata stok (unit)',f1(r.avg)],['Unit hilang',r.short],['Total biaya',rp(r.cost)]]);$('it').innerHTML=''};
+$('ia').onclick=()=>{const o=iopt(),mx=Math.ceil(1.6*(o.m*o.L+2*o.sd*Math.sqrt(o.L))),step=Math.max(1,Math.round(mx/10));let rows=[];
+for(let s=0;s<=mx;s+=step)rows.push([s,simInv(s,o,n('iS'))]);const best=Math.min(...rows.map(x=>x[1].cost));
+$('it').innerHTML='<table><tr><th>s</th><th>Layanan</th><th>Pesanan</th><th>Rata-rata stok</th><th>Total biaya</th></tr>'+rows.map(([s,r])=>`<tr class="${r.cost===best?'best':''}"><td>${s}</td><td>${f1(r.fill*100)}%</td><td>${r.ord}</td><td>${f1(r.avg)}</td><td>${rp(r.cost)}</td></tr>`).join('')+'</table><p class="note">Baris yang disorot adalah total biaya terendah pada seed ini. Coba seed lain untuk melihat apakah pilihannya stabil.</p>';cards('io',[])};
+
+/* Kasus 3: proyek */
+const tk=[['A','Pembongkaran',4,6,10],['B','Instalasi listrik',8,12,20],['C','Instalasi pipa',9,11,18],['D','Finishing',5,7,12]];
+$('pt').innerHTML='<tr><th>Pekerjaan</th><th>Optimis</th><th>Paling mungkin</th><th>Pesimis</th></tr>'+tk.map(([k,nm,a,m,b])=>`<tr><td>${k}. ${nm}</td>${[a,m,b].map((v,i)=>`<td><input id="p${k}${i}" type="number" value="${v}" style="width:80px" aria-label="${nm} ${['optimis','paling mungkin','pesimis'][i]}"></td>`).join('')}</tr>`).join('');
+function tri(a,m,b,u){const F=(m-a)/(b-a);return u<F?a+Math.sqrt(u*(b-a)*(m-a)):b-Math.sqrt((1-u)*(b-a)*(b-m))}
+$('pb').onclick=()=>{const r=rng(n('ps')),N=Math.round(n('pn')),dl=n('pd'),g=k=>[n('p'+k+'0'),n('p'+k+'1'),n('p'+k+'2')];
+const T={A:g('A'),B:g('B'),C:g('C'),D:g('D')};if(Object.values(T).some(([a,m,b])=>!(a<=m&&m<=b&&a<b))){$('po').innerHTML='<p class="note">Isi tiap pekerjaan dengan optimis ≤ paling mungkin ≤ pesimis, dan optimis lebih kecil dari pesimis.</p>';return}
+const tot=[];let bc=0;for(let i=0;i<N;i++){const s=k=>tri(...T[k],r()),b=s('B'),c=s('C');if(b>=c)bc++;tot.push(s('A')+Math.max(b,c)+s('D'))}
+const so=[...tot].sort((x,y)=>x-y),q=p=>so[Math.min(N-1,Math.floor(p*N))];
+cards('po',[['Rata-rata durasi (hari)',f1(mean(tot))],['Median (hari)',f1(q(.5))],['Persentil 90 (hari)',f1(q(.9))],['Peluang selesai ≤ tenggat',f1(tot.filter(x=>x<=dl).length/N*100)+'%'],['Jumlah rata-rata modus (A+B+D)',f1(T.A[1]+Math.max(T.B[1],T.C[1])+T.D[1])+' hari'],['Indeks kekritisan B / C',f1(bc/N*100)+'% / '+f1(100-bc/N*100)+'%']]);
+hist('ph',tot,25,'hari total proyek')};
+</script>
+</body>
+</html>
